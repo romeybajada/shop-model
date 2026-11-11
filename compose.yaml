@@ -1,0 +1,35 @@
+include:
+  - monitoring/compose.yaml
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: shop
+    volumes:
+      - db-data:/var/lib/postgresql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "shop", "-d", "shop"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  
+  api:
+    build: .
+    image: shop-model:0.3
+    ports:
+      - "8888:8888"
+      - "3000:3000"
+      - "9090:9090"
+    environment:
+      MODEL_VERSION: "0.3"
+      DATABASE_URL: postgresql://shop:${DB_PASSWORD}@db:5432/shop
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
