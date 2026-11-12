@@ -6,9 +6,11 @@ VERSION := $(shell python3 -c "import tomllib; print(tomllib.load(open('pyprojec
 IMAGE ?= shop-model
 # Each image also carries the commit it was built from, so a tag is never reused for different code.
 GIT_SHA := $(shell git rev-parse --short HEAD 2>/dev/null || echo nogit)
+SOURCE ?=
+LABELS := $(if $(SOURCE),--label org.opencontainers.image.source=$(SOURCE))
 GATE_SPLIT ?= holdout
 
-.PHONY: install lint test validate gate build up version ci
+.PHONY: install lint test validate gate build up version ci publish
 
 install:
 	python3 -m pip install -r requirements.txt
@@ -27,7 +29,7 @@ gate:
 	shop-gate --split $(GATE_SPLIT)
 
 build:
-	docker build --build-arg MODEL_VERSION=$(VERSION) -t $(IMAGE):$(VERSION) -t $(IMAGE):$(VERSION)-$(GIT_SHA) .
+	docker build --build-arg MODEL_VERSION=$(VERSION) -t $(IMAGE):$(VERSION) -t $(IMAGE):$(VERSION)-$(GIT_SHA) $(LABELS) .
 
 up:
 	MODEL_VERSION=$(VERSION) docker compose up -d --build
@@ -35,3 +37,7 @@ version:
 	@echo $(VERSION)
 # The whole pipeline, in order. make stops at the first command that exits non-zero.
 ci: lint test validate gate build
+
+publish:
+	docker push $(IMAGE):$(VERSION)
+	docker push $(IMAGE):$(VERSION)-$(GIT_SHA)
