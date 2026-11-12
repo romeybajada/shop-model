@@ -1,5 +1,20 @@
 # Non-secret settings. Safe to share.
-data_path: "data/prices.csv"
+data_path: "data/prices_v2.csv"
 model_path: "models/model.joblib"
 vat_rate: 0.18
 seed: 42
+
+# Training window: null trains on every row of data_path.
+# Set a date (YYYY-MM-DD) to train on recent rows only.
+train_start: "2026-08-03"
+
+# The frozen holdout: the last eight weeks, cut once and never edited.
+# If the file's SHA-256 no longer matches, the gate refuses to run (exit code 2).
+holdout_path: "data/holdout.csv"
+holdout_start: "2026-08-31"
+holdout_sha256: "6f9f166ef89f71275397fdd2a8d5c5f3ce9544a79775944278824963aa072ec1"
+
+# The quality gate: which metric blocks a release, and its threshold.
+# Metrics available: accuracy, precision, recall, f1, roc_auc
+gate_metric: "accuracy"
+gate_threshold: 0.70

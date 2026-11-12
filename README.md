@@ -21,6 +21,39 @@ python3 -m pip install -e ".[dev]"
 cp env.example .env
 ```
 
+## The pipeline
+
+Every check runs from the Makefile, with the virtual environment active. `build` and
+`up` also need Docker running. To run the whole pipeline in order:
+
+```bash
+make ci
+```
+
+
+| Target | What it does |
+|---|---|
+| `make install` | Installs the pinned requirements and this package with its dev tools |
+| `make lint` | ruff checks the code for errors and bad style |
+| `make test` | pytest runs every test |
+| `make validate` | Checks both data files against a schema |
+| `make gate` | Trains, then scores the frozen holdout (data/holdout.csv) |
+| `make build` | Builds `shop-model:<version>` and `shop-model:<version>-<commit>`, the version read from pyproject.toml |
+| `make up` | Starts the services with that version |
+| `make version` | Prints the version |
+| `make ci` | Runs lint, test, validate, gate and build, and stops at the first one that fails |
+
+
+To score the random 20 % split instead of the holdout, for comparison:
+
+```bash
+make gate GATE_SPLIT=random
+```
+
+The version lives only in pyproject.toml. `make build` and `make up` read it from there,
+so to release a new version, change it in pyproject.toml.
+
+
 ## Test
 
 ```bash

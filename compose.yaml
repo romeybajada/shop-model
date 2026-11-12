@@ -19,13 +19,13 @@ services:
   
   api:
     build: .
-    image: shop-model:0.3
+    image: shop-model:${MODEL_VERSION:-dev}
     ports:
       - "8888:8888"
       - "3000:3000"
       - "9090:9090"
     environment:
-      MODEL_VERSION: "0.3"
+      MODEL_VERSION: ${MODEL_VERSION:-dev}
       DATABASE_URL: postgresql://shop:${DB_PASSWORD}@db:5432/shop
     depends_on:
       db:

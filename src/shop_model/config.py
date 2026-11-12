@@ -7,3 +7,7 @@ def load_config(path=None):
         config = yaml.safe_load(f)
     
     return config
+
+def data_path (config):
+    """The training data file. DATA_PATH in the environment overrides config.yaml, for every command."""
+    return (os.environ.get ("DATA_PATH", config["data_path"]))
