@@ -18,3 +18,9 @@ holdout_sha256: "6f9f166ef89f71275397fdd2a8d5c5f3ce9544a79775944278824963aa072ec
 # Metrics available: accuracy, precision, recall, f1, roc_auc
 gate_metric: "accuracy"
 gate_threshold: 0.70
+
+# MLflow (Session 6). MLFLOW_TRACKING_URI in .env overrides tracking_uri.
+mlflow:
+  tracking_uri: "http://localhost:5000"
+  experiment: "shop_model"
+  model_name: "shop_model"

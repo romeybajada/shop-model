@@ -11,7 +11,8 @@ COPY config ./config
 COPY data ./data
 RUN pip install --no-cache-dir --no-deps .
 
-RUN shop-train
+# No tracking server exists while the image is built (Stage 15 removes this line).
+RUN MLFLOW_TRACKING_URI=none shop-train
 
 ARG MODEL_VERSION=dev
 ENV MODEL_VERSION=${MODEL_VERSION}

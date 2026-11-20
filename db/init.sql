@@ -6,3 +6,5 @@ price DOUBLE PRECISION NOT NULL,
 probability DOUBLE PRECISION NOT NULL,
 model_version TEXT NOT NULL
 );
+
+CREATE DATABASE mlflow;
